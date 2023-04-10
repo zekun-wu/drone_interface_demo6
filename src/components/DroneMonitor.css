@@ -1,0 +1,124 @@
+.drone-monitor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  padding: 4rem 0;
+  box-sizing: border-box;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+  height: 100%;
+  max-width: 90%; 
+  margin: 0 auto; 
+}
+
+.drone-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(145deg, #f5f7fa, #e4e6e9);
+  padding: 2rem;
+}
+
+.drone-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  align-self: flex-start;
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 10%;
+  margin-bottom: 4px;
+  border: 2px solid transparent; 
+}
+
+.icon-text {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 4px;
+  color: #4a4a4a;
+  white-space: nowrap;
+}
+
+.top-right-info {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.distance-text,
+.elapsed-text {
+  color: #4a4a4a;
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+    grid-gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+  .icon-text {
+    font-size: 0.6rem;
+  }
+  .drone-block {
+    grid-gap: 0.2rem;
+    padding: 0.2rem;
+  }
+}
+  
+@media screen and (max-width: 480px) {
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+  .icon-text {
+    font-size: 0.5rem;
+  }
+  .drone-block {
+    grid-gap: 0.1rem;
+    padding: 0.1rem;
+  }
+}
