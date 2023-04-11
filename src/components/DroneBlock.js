@@ -106,17 +106,17 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
       },
 
       horizontal_speed: () => {
-        const value = latestData.horizontal_speed ? (100 * latestData.horizontal_speed).toFixed(0) + 'm/s' : 'unknown';
+        const value = latestData.horizontal_speed ? (latestData.horizontal_speed).toFixed(0) + 'm/s' : 'unknown';
         return { value, highlight: null };
       },
 
       vertical_speed: () => {
-        const value = latestData.vertical_speed ? (100 * latestData.vertical_speed).toFixed(0) + 'm/s' : 'unknown';
+        const value = latestData.vertical_speed !== undefined && latestData.vertical_speed  !== null? (latestData.vertical_speed).toFixed(0) + 'm/s' : 'unknown';
         return { value, highlight: null };
       },
 
       altitude: () => {
-        const value = latestData.altitude !== undefined && latestData.altitude !== null ? (100 * latestData.altitude).toFixed(0) + 'm' : 'unknown';
+        const value = latestData.altitude !== undefined && latestData.altitude !== null ? (latestData.altitude).toFixed(0) + 'm' : 'unknown';
         return { value, highlight: null };
       },
 
