@@ -74,7 +74,7 @@ function App() {
     }
 
     const criticalSituationFiles = criticalSituationFolders.map(folder => {
-      const fileIndex = Math.floor(Math.random() * 5) + 1;
+      const fileIndex = Math.floor(Math.random() * 4) + 1;
       return {
         data: `${process.env.PUBLIC_URL}/data/critical_situations/${folder}/${fileIndex}/data.json`
       };

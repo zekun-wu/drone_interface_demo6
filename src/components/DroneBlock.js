@@ -44,20 +44,16 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
       icon: batteryIcon,
     },
     {
-      name: 'weather',
-      getIcon: (value) => {
-        const iconData = weatherIcons[value] || { icon: null };
-
-        return iconData.icon;
-      },
+      name: 'wind',
+      icon: windIcon,
     },
     {
       name: 'rotor',
       icon: rotorIcon,
     },
     {
-      name: 'landing',
-      icon: landingIcon,
+      name: 'zone',
+      icon: flyIcon,
     },
     {
       name: 'horizontal_speed',
@@ -72,11 +68,8 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
       icon: altitudeIcon,
     },
     {
-      name: 'zone',
-      getIcon: (value) => {
-        const iconData = zoneIcons[value] || { icon: null };
-        return iconData.icon;
-     },
+      name: 'distance',
+      icon: distanceIcon,
     }
   ];
 
@@ -84,7 +77,7 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
     const iconValues = {
 
       rotor: () => {
-        const value = latestData.rotor === 1 ? 'working' : 'not working';
+        const value = latestData.rotor === 1 ? 'working' : 'MALF';
         const highlight = latestData.rotor === 0 ? highlightStatus : null;
         return { value, highlight };
       },
@@ -95,13 +88,14 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
       },
 
       wind: () => {
-        const value = latestData.wind ? (100 * latestData.wind).toFixed(1) + 'm/s' : 'unknown';
-        return { value, highlight: null };
+        const value = latestData.wind ? (latestData.wind).toFixed(1) + 'm/s' : 'unknown';
+        const highlight = (100*latestData.wind).toFixed(0)> 1000 ? highlightStatus : null;
+        return { value, highlight};
       },
 
       battery: () => {
         const value = latestData.battery ? (100 * latestData.battery).toFixed(0) + '%' : 'unknown';
-        const highlight = (100 * latestData.battery).toFixed(0)< 10 ? highlightStatus : null;
+        const highlight = (100 * latestData.battery).toFixed(0)<=10 ? highlightStatus : null;
         return { value, highlight };
       },
 
@@ -111,7 +105,7 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
       },
 
       vertical_speed: () => {
-        const value = latestData.vertical_speed !== undefined && latestData.vertical_speed  !== null? (latestData.vertical_speed).toFixed(0) + 'm/s' : 'unknown';
+        const value = latestData.vertical_speed !== undefined && latestData.vertical_speed  !== null? (latestData.vertical_speed).toFixed(1) + 'm/s' : 'unknown';
         return { value, highlight: null };
       },
 
@@ -131,7 +125,7 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
       },
 
       camera: () => {
-        const value = latestData.camera === 1 ? 'working' : 'not working';
+        const value = latestData.camera === 1 ? 'working' : 'MALF';
         const highlight = latestData.camera === 0 ?  highlightStatus:null;
         return { value, highlight };
       },
@@ -142,8 +136,10 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
         return { value, highlight };
       },
       zone: () => {
-        const icon = zoneIcons[latestData.zone] || { value: 'unknown', highlight: latestData.nofly === 0 ? highlightStatus : null };
-        return icon;
+        // const icon = zoneIcons[latestData.zone] || { value: 'unknown', highlight: latestData.nofly === 0 ? highlightStatus : null };
+        const value = latestData.zone === 1 ? 'fly zone' : 'no-fly';
+        const highlight = latestData.zone === 0 ? highlightStatus : null;        
+        return { value, highlight };
       },
     };
   
@@ -207,10 +203,10 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
   return (
     <div className="drone-block">
       <div className="drone-number">Drone {droneNumber}</div>
-      <div className="top-right-info">
+      {/* <div className="top-right-info">
         <span className="distance-text">{getIconValue("distance").value}</span>
         <span className="elapsed-text">{getIconValue("time").value}</span>
-      </div>
+      </div> */}
       <div className="icon-grid">
           {icons.slice(0, 8).map((iconData, index) => (
             <IconComponent key={index} iconData={iconData} />

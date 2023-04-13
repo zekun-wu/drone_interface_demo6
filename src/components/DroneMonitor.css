@@ -53,11 +53,13 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
+  height: 80px; 
+  overflow: hidden; 
 }
 
 .icon {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -68,7 +70,7 @@
 
 .icon-text {
   text-align: center;
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-top: 4px;
   color: #4a4a4a;
   white-space: nowrap;
