@@ -20,10 +20,11 @@ import altitudeIcon from './icons/altitude.png';
 import distanceIcon from './icons/distance.png';
 import elapsedIcon from './icons/elapsed.png';
 
-const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
+const DroneBlock = ({ droneData, droneNumber, highlightStatus, onTimestampIndexChange}) => {
 
   const [latestData, setLatestData] = useState({});
   const [currentIndex, setCurrentIndex] = useState(0);
+  
 
   const weatherIcons = [
     { value: "sunny", icon: sunIcon, highlight: null },
@@ -162,6 +163,8 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
 
   const IconComponent = ({ iconData }) => {
 
+    console.log(iconData)
+
     const { name, getIcon,icon } = iconData;
     const { value, highlight } = getIconValue(name);
 
@@ -195,10 +198,17 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus}) => {
           return prevIndex + 1;
         });
       }, (1000 * 40) / droneData.timestamps.length);
-  
+
+    onTimestampIndexChange(currentIndex);
       return () => clearInterval(timer);
     }
   }, [droneData, currentIndex]);
+
+  // useEffect(() => {
+  //   if (droneData && droneData.timestamps && droneData.timestamps.length > 0) {
+  //     setLatestData(droneData.timestamps[currentIndex]);
+  //   }
+  // }, [droneData, currentIndex]);
 
   return (
     <div className="drone-block">

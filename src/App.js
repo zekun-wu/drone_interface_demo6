@@ -68,13 +68,13 @@ function App() {
   const criticalSituationFolders = ['t1', 't2', 't3'];
   const generateDroneDataFiles = () => {
     const normalSceneFiles = [];
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 1; i++) {
       const data = `${process.env.PUBLIC_URL}/data/normal_scenes/${i}/data.json`;
       normalSceneFiles.push({ data });
     }
 
     const criticalSituationFiles = criticalSituationFolders.map(folder => {
-      const fileIndex = Math.floor(Math.random() * 4) + 1;
+      const fileIndex = Math.floor(Math.random() * 3) + 1;
       return {
         data: `${process.env.PUBLIC_URL}/data/critical_situations/${folder}/${fileIndex}/data.json`
       };
