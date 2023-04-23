@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useRef,useEffect, useMemo, useCallback } from 'react';
 import DroneBlock from './DroneBlock';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -6,12 +6,19 @@ import 'leaflet/dist/leaflet.css';
 import './DroneMonitor.css';
 import droneIconImg from './icons/zone/fly.png';
 
-const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
+const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles, droneData, onDataPlayed,taskStarted }) => {
 
-  const [droneData, setDroneData] = useState({});
+  console.log('identifier',identifier)
+  console.log('scene',scene)
+  console.log('highlight',highlight)
+
+  // const [droneData, setDroneData] = useState({});
   const droneBlocks = new Array(6).fill(null);
 
-  const [currentTimestampIndex, setCurrentTimestampIndex] = useState(0);
+  // const [currentTimestampIndex, setCurrentTimestampIndex] = useState(0);
+  const [currentTimestamp, setCurrentTimestamp] = useState(0);
+  const [dataPlayed, setDataPlayed] = useState(false); 
+  const [initialPositions, setInitialPositions] = useState({});
 
   const mapRef = useRef(null); // Add this ref
   const markersRef = useRef([]);
@@ -25,36 +32,6 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
   // }
 
   const criticalSituationFolders = ['t1', 't2', 't3'];
-  // const criticalSituationFiles = criticalSituationFolders.map(folder => {
-  //   const fileIndex = Math.floor(Math.random() * 5) + 1;
-  //   return {
-  //     data: `${process.env.PUBLIC_URL}/data/critical_situations/${folder}/${fileIndex}/data.json`
-  //   };
-  // });
-
-  // const droneFiles = [...normalSceneFiles, ...criticalSituationFiles];
-  // droneFiles.sort(() => Math.random() - 0.5);
-
-  // const droneDataFiles = droneFiles.map((file) => file.data);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const dataPromises = droneDataFiles.map((dataFile) =>
-        fetch(dataFile).then((response) => response.json()));
-
-      const dataResults = await Promise.allSettled(dataPromises);
-      const dataObj = dataResults.reduce((obj, data, index) => {
-        obj[index + 1] = data;
-        return obj;
-      }, {});
-
-      setDroneData(dataObj);
-      console.log("Drone data loaded: ", dataObj);
-
-    };
-
-    fetchData();
-  }, [droneDataFiles]);
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -71,18 +48,38 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
       const map = L.map(mapContainer, {
         maxBounds: bounds,
         center: [51.505, -0.09],
-        zoom: 13,
+        zoom: 12,
         dragging: false, // Disable map dragging
         scrollWheelZoom: false, // Disable scroll wheel zoom
       });
   
-      map.setView([49.239, 7.002], 13);
+      map.setView([49.239, 7.002], 12);
   
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
   
+    // Add the initial drone positions to the map
+    const newInitialPositions = {};
+    for (let index = 0; index < 6; index++) {
+      const timestamps = droneData[String(index + 1)]?.value?.timestamps;
+      if (!timestamps || timestamps.length === 0) continue;
+
+      const drone = timestamps[0];
+      if (!drone.latitude || !drone.longitude) continue;
+
+      const marker = L.marker([drone.latitude, drone.longitude], {
+        icon: createDroneIcon(index + 1),
+      });
+
+      marker.addTo(map);
+      markersRef.current.push(marker);
+
+      newInitialPositions[index + 1] = [drone.latitude, drone.longitude];
+    }
+    setInitialPositions(newInitialPositions);
+
       mapRef.current = map;
   
       return () => {
@@ -109,6 +106,10 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
   };
 
   useEffect(() => {
+    console.log('Update')
+    console.log('DroneData',droneData)
+    console.log('currentTimestamp',currentTimestamp)
+
     const updateMarkers = () => {
       if (!mapRef.current || Object.keys(droneData).length < 4) return;
   
@@ -119,11 +120,11 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
   
       // Create new markers for each drone
       markersRef.current = [];
-      for (let index = 0; index < 4; index++) {
+      for (let index = 0; index < 6; index++) {
         const timestamps = droneData[String(index + 1)]?.value?.timestamps;
         if (!timestamps || timestamps.length === 0) continue;
   
-        const drone = timestamps[currentTimestampIndex];
+        const drone = timestamps[currentTimestamp];
         if (!drone.latitude || !drone.longitude) continue;
 
         const marker = L.marker([drone.latitude, drone.longitude], {
@@ -133,20 +134,26 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
         marker.addTo(mapRef.current);
   
         // Add a popup to the marker with the drone's latitude and longitude
-        marker.bindPopup(
-          `<b>Drone ${index + 1}</b><br>Latitude: ${drone.latitude.toFixed(
-            4
-          )}<br>Longitude: ${drone.longitude.toFixed(4)}`
-        );
+        // marker.bindPopup(
+        //   `<b>Drone ${index + 1}</b><br>Latitude: ${drone.latitude.toFixed(
+        //     4
+        //   )}<br>Longitude: ${drone.longitude.toFixed(4)}`
+        // );
   
         markersRef.current.push(marker);
       }
     };
-  
-    if (mapRef.current) {
+    
+    // console.log(mapRef.current)
+    // console.log('taskStarted',taskStarted)
+    // console.log(currentTimestamp)
+    if (mapRef.current && (taskStarted || Object.keys(initialPositions).length > 0)) {
       updateMarkers();
+      if (currentTimestamp == droneData[1].value.timestamps.length-1 ){
+        onDataPlayed();
+      }
     }
-  }, [droneData, currentTimestampIndex]);
+  }, [droneData, currentTimestamp,taskStarted]);
 
   const droneNumberDataMap = useMemo(() => droneDataFiles.reduce((map, dataFile, index) => {
     const droneNumber = index + 1;
@@ -158,35 +165,6 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
     };
     return map;
   }, {}), [droneDataFiles]);
-  
-  // console.log('droneNumberDataMap:', droneNumberDataMap);
-
-  // return (
-  //   <div className="drone-monitor-container">
-  //     {/* <div className="file-list">
-  //       <h3>Loaded Drone Data:</h3>
-  //       <ul>
-  //         {droneDataFiles.map((dataFile, index) => (
-  //           <li key={index}>{`${index + 1}. ${dataFile}/data.json`}</li>
-  //         ))}
-  //       </ul>
-  //     </div> */}
-  //     <div id="map" style={{ width: '100%', height: '100%' }}></div>
-  //     <div className="container">
-  //       {Object.keys(droneData).length === 0 ? (
-  //         <p>Loading...</p>
-  //       ) : (
-  //         droneBlocks.map((_, index) => (
-  //           <DroneBlock
-  //             droneData={droneData[String(index + 1)].value}
-  //             droneNumber={index + 1}
-  //             highlightStatus={highlight}
-  //           />
-  //         ))
-  //       )}
-  //     </div>
-  //   </div>
-  // );
 
   return (
     <div className="drone-monitor-container">
@@ -194,12 +172,13 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
         {Object.keys(droneData).length === 0 ? (
           <p>Loading...</p>
         ) : (
-          droneBlocks.slice(0, 4).map((_, index) => (
+          droneBlocks.slice(0, 6).map((_, index) => (
             <DroneBlock
               droneData={droneData[String(index + 1)].value}
               droneNumber={index + 1}
               highlightStatus={highlight}
-              onTimestampIndexChange={setCurrentTimestampIndex}
+              onTimestampChange ={setCurrentTimestamp}
+              isFrozen={!taskStarted}
             />
           ))
         )}
@@ -212,3 +191,7 @@ const DroneMonitor = ({ identifier, scene, highlight, droneDataFiles }) => {
 };
   
 export default DroneMonitor;
+
+
+
+
