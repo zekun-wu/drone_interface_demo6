@@ -20,9 +20,10 @@ import altitudeIcon from './icons/altitude.png';
 import distanceIcon from './icons/distance.png';
 import elapsedIcon from './icons/elapsed.png';
 
-const DroneBlock = ({ droneData, droneNumber, highlightStatus, onTimestampChange, isFrozen}) => {
+const DroneBlock = ({ droneData, droneNumber, highlightStatus, isFrozen, latestData}) => {
 
-  const [latestData, setLatestData] = useState({});
+  // console.log('currentData in DroneBlock:',latestData)
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const weatherIcons = [
@@ -77,7 +78,7 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus, onTimestampChange
     const iconValues = {
 
       rotor: () => {
-        const value = latestData.rotor === 1 ? 'working' : 'MALF';
+        const value = latestData.rotor === 1 ? 'working' : 'off';
         const highlight = latestData.rotor === 0 ? highlightStatus : null;
         return { value, highlight };
       },
@@ -173,11 +174,13 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus, onTimestampChange
           title={`${name}: ${latestData[name] || 0}`}
           style={{
             backgroundImage: `url(${getIcon ? getIcon(latestData[name]) : icon})`,
-            border: highlight === 1 ? '2px solid red' : 'none',
-            backgroundColor: highlight === 2 ? 'yellow' : 'none',
+            // border: highlight === 1 ? 'yellow' : 'none',
+            backgroundColor: highlight === 1 ? 'yellow' : 'none',
           }}
         ></div>
         <span className="icon-text">{value}</span>
+
+
       </div>
     );
   };
@@ -190,32 +193,7 @@ const DroneBlock = ({ droneData, droneNumber, highlightStatus, onTimestampChange
   //   }
   // };
 
-  useEffect(() => {
-    // console.log('droneData',droneData)
-    // console.log('isFrozen',isFrozen)
-    // console.log(droneData && droneData.timestamps && droneData.timestamps.length > 0)
-    if (droneData && droneData.timestamps && droneData.timestamps.length > 0) {
-      if (!isFrozen) {
-      setLatestData(droneData.timestamps[currentIndex]);
-      const timer = setInterval(() => {
-        setCurrentIndex((prevIndex) => {
-          if (prevIndex + 1 >= droneData.timestamps.length) {
-            clearInterval(timer);
-            return prevIndex;
-          }
-          return prevIndex + 1;
-        });
-      }, (1000 * 40) / droneData.timestamps.length);
-      onTimestampChange(currentIndex);
-      return () => clearInterval(timer);
-    }
-    else{
-      // console.log('frozen')
-      // console.log(droneData.timestamps[0])
-      setLatestData(droneData.timestamps[0]);
-    }
-  }
-  }, [droneData, currentIndex, onTimestampChange,isFrozen]);
+  // Second useEffect for updating latestData when currentIndex changes
 
   return (
     <div className="drone-block">
