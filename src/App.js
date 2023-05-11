@@ -82,7 +82,7 @@ function App() {
 
         if(allDronesCurrentData[0]['end']===1){
           if (endQuestionnaire) {
-            if (sceneCounter === 1) {
+            if (sceneCounter === 6) {
               setallTaskEnded(true);
             } else {
               setTaskStarted(false);
@@ -128,7 +128,7 @@ function App() {
     setShowQuestionnaire(false);
   
     if (allDronesCurrentData[0]['end'] === 1) {
-      if (sceneCounter === 1) {
+      if (sceneCounter === 6) {
         setallTaskEnded(true);
       } else {
         setEndQuestionnaire(true);
