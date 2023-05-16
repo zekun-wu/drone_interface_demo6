@@ -35,15 +35,15 @@
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background: linear-gradient(145deg, #f5f7fa, #e4e6e9);
-  padding: 1rem; /* Adjusted padding */
+  padding: 0.4rem; /* Adjusted padding */
   flex: 1;
   /* transform: scale(0.95); */
 }
 
 .drone-number {
-  font-size: 1.4rem;
+  font-size: 1.0rem;
   font-weight: bold;
-  margin-top: 1rem;
+  margin-top: 0.4rem;
   margin-left: 0.2rem;
   align-self: flex-start;
 }
@@ -52,7 +52,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 3rem; 
+  gap: 0.6rem; 
   width: 100%;
 }
 
@@ -67,8 +67,8 @@
 }
 
 .icon {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
@@ -79,7 +79,7 @@
 
 .icon-text {
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.8rem;
   margin-top: 2px;
   color: #4a4a4a;
   white-space: nowrap;
