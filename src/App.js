@@ -24,7 +24,7 @@ function App() {
 
   const [spacebarTimestamps, setSpacebarTimestamps] = useState([]);
 
-  const final_task = 2
+  const final_task = 6
 
   const handleLogin = (userData) => {
     // Save userData to results
