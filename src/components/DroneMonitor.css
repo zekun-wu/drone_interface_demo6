@@ -1,7 +1,7 @@
 .drone-monitor-container {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 90vh;
   width: 100%;
 }
 
@@ -9,20 +9,21 @@
   display: flex;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 5.0rem;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 3.0rem;
   width: 50%;
   height: 90%;
-  padding: 2rem;
+  padding: 1rem;
   margin-right: 1rem;
   margin-left: 1rem;
-  margin-bottom: 4rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .map-container {
   width: 50%;
-  height: 95%;
-  margin: 1.0rem;
+  height: 90%;
+  margin: 3.0rem;
 }
 
 .drone-block {
@@ -42,7 +43,7 @@
 .drone-number {
   font-size: 1.4rem;
   font-weight: bold;
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-left: 0.2rem;
   align-self: flex-start;
 }

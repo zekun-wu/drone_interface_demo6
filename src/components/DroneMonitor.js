@@ -7,10 +7,8 @@ import './DroneMonitor.css';
 import droneIconImg from './icons/zone/fly.png';
 
 const DroneMonitor = ({  key, taskStarted, sceneCounter, currentIndex, currentData, droneData, setSpacebarTimestamps}) => {
-  console.log('currentIndex',currentIndex)
-  console.log('currentData',currentData)
 
-  const droneBlocks = new Array(4).fill(null);
+  const droneBlocks = new Array(6).fill(null);
   const [dataPlayed, setDataPlayed] = useState(false); 
   const [initialPositions, setInitialPositions] = useState({});
 
@@ -37,7 +35,7 @@ const DroneMonitor = ({  key, taskStarted, sceneCounter, currentIndex, currentDa
     if (!mapRef.current) return;
 
     const newInitialPositions = {};
-    for (let index = 0; index < 4; index++) {
+    for (let index = 0; index < 6; index++) {
       const drone= currentData[index];
       if (!drone) continue;
       if (!drone.latitude || !drone.longitude) continue;
@@ -110,7 +108,7 @@ const DroneMonitor = ({  key, taskStarted, sceneCounter, currentIndex, currentDa
   
     // Create new markers for each drone
     markersRef.current = [];
-    for (let index = 0; index < 4; index++) {
+    for (let index = 0; index < 6; index++) {
       const timestamps = droneData[index].timestamps;
   
       if (!timestamps || timestamps.length === 0) continue;
@@ -170,7 +168,7 @@ const DroneMonitor = ({  key, taskStarted, sceneCounter, currentIndex, currentDa
         {!droneData[sceneCounter - 1] ? (
           <p>Loading...</p>
         ) : (
-          droneBlocks.slice(0, 4).map((_, index) => (
+          droneBlocks.slice(0, 6).map((_, index) => (
             <DroneBlock
               droneData={droneData[index]}
               droneNumber={index + 1}
